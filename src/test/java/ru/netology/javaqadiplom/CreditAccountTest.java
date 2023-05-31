@@ -5,9 +5,8 @@ import org.junit.jupiter.api.Test;
 
 public class CreditAccountTest {
 
-
     @Test
-    public void shouldThrowAnExceptionForRate() {  //Тест на выброс исключения. Должен создавать обьект с заданными корректными параметрами, иначе исключение
+    public void shouldThrowAnExceptionForRate() {
 
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -22,7 +21,7 @@ public class CreditAccountTest {
     }
 
     @Test
-    public void shouldThrowAnExceptionForCreditLimit() {  //Тест на выброс исключения. Должен создавать обьект с заданными корректными параметрами, иначе исключение
+    public void shouldThrowAnExceptionForCreditLimit() {
 
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -37,7 +36,7 @@ public class CreditAccountTest {
     }
 
     @Test
-    public void shouldThrowAnExceptionForBalance() {  //Тест на выброс исключения. Должен создавать обьект с заданными корректными параметрами, иначе исключение
+    public void shouldThrowAnExceptionForBalance() {
 
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
@@ -53,7 +52,23 @@ public class CreditAccountTest {
 
 
     @Test
-    public void shouldReducePositiveBalanceByPay() {        //неправильный метод pay. Баланс должен уменьшаться на сумму покупки
+    public void shouldReducePositiveBalanceByPay() {
+
+        CreditAccount account = new CreditAccount(
+                4000,
+                5_000,
+                15
+        );
+
+        account.pay(3000);
+
+        Assertions.assertEquals(1000, account.getBalance());
+
+
+    }
+
+    @Test
+    public void shouldReduceZeroBalanceByPay() {
 
         CreditAccount account = new CreditAccount(
                 0,
@@ -67,26 +82,88 @@ public class CreditAccountTest {
 
 
     }
-
     @Test
-    public void shouldReduceNegativeBalanceByPay() {        //неправильный метод pay. Баланс должен уменьшаться на сумму покупки, при балансе меньше лимита, операция должна завершиться ничего не поменяв на счете
+    public void shouldReduceBalanceByEqualsPay() {
 
         CreditAccount account = new CreditAccount(
-                -5000,
+                4000,
                 5_000,
                 15
         );
 
-        account.pay(3000);
+        account.pay(4000);
 
-        Assertions.assertEquals(-5000, account.getBalance());
+        Assertions.assertEquals(0, account.getBalance());
+
+
+    }
+
+    @Test
+    public void notShouldReduceBalanceByPayMoreLimit() {
+
+        CreditAccount account = new CreditAccount(
+                0,
+                5_000,
+                15
+        );
+
+        account.pay(6000);
+
+        Assertions.assertEquals(0, account.getBalance());
+
+
+    }
+    @Test
+    public void notShouldReduceBalanceByZeroPay() {
+
+        CreditAccount account = new CreditAccount(
+                4000,
+                5_000,
+                15
+        );
+
+        account.pay(0);
+
+        Assertions.assertEquals(4000, account.getBalance());
+
+
+    }
+
+    @Test
+    public void notShouldReduceBalanceByIncorrectPay() {
+
+        CreditAccount account = new CreditAccount(
+                0,
+                5_000,
+                15
+        );
+
+        account.pay(-3000);
+
+        Assertions.assertEquals(0, account.getBalance());
+
+
+    }
+    @Test
+    public void ShouldReduceBalanceByPayEqualsLimitPlusBalance() {
+
+        CreditAccount account = new CreditAccount(
+                1000,
+                5_000,
+                15
+        );
+
+        account.pay(6000);
+
+        Assertions.assertEquals(0, account.getBalance());
 
 
     }
 
 
+
     @Test
-    public void shouldAddToPositiveBalance() {    //метод на пополнение баланса
+    public void shouldAddZeroBalance() {
         CreditAccount account = new CreditAccount(
                 0,
                 5_000,
@@ -100,43 +177,84 @@ public class CreditAccountTest {
     }
 
     @Test
-    public void shouldAddToNegativeBalance() {            //метод на пополнение баланса. баланс не увеличивается на сумму пополнения при отрицательном балансе и при балансе больше 0
+    public void notShouldChangeBalanceOnNegativeAdd() {            //метод на пополнение баланса. баланс не увеличивается на сумму пополнения при отрицательном балансе и при балансе больше 0
         CreditAccount account = new CreditAccount(
-                -20,
+                1000,
                 5_000,
                 15
         );
 
-        account.add(3000);
+        account.add(-3000);
 
 
-        Assertions.assertEquals(2980, account.getBalance());
+        Assertions.assertEquals(1000, account.getBalance());
+    }
+    @Test
+    public void shouldAddToPositiveBalance() {    //метод на пополнение баланса
+        CreditAccount account = new CreditAccount(
+                1000,
+                5_000,
+                15
+        );
+
+        account.add(3_000);
+
+
+        Assertions.assertEquals(4_000, account.getBalance());
     }
 
     @Test
-    public void shouldCalculateRateToNegativeBalanceYearChange() {  //метод на расчет годового процента
+    public void notShouldChangeBalanceOnZeroAdd() {
         CreditAccount account = new CreditAccount(
-                -200,
+                1000,
                 5_000,
                 15
         );
 
-        account.getRate();
+        account.add(0);
 
-        Assertions.assertEquals(-30, account.yearChange());
+
+        Assertions.assertEquals(1000, account.getBalance());
+    }
+
+    @Test
+    public void shouldCalculatePercentOnNegativeBalance() {
+        CreditAccount account = new CreditAccount(
+                1000,
+                5_000,
+                15
+        );
+
+        account.pay(2000);
+
+        Assertions.assertEquals(150, account.yearChange());
 
 
     }
 
     @Test
-    public void shouldCalculateRateToPositiveBalanceYearChange() {          //дописать метод, при положительном балансе считает процент, не хватает условия
+    public void notShouldCalculatePercentOnPositiveBalance() {
         CreditAccount account = new CreditAccount(
-                200,
+                2000,
                 5_000,
                 15
         );
 
-        account.getRate();
+        account.pay(1000);
+
+        Assertions.assertEquals(0, account.yearChange());
+
+
+    }
+    @Test
+    public void notShouldCalculatePercentOnZeroBalance() {
+        CreditAccount account = new CreditAccount(
+                2000,
+                5_000,
+                15
+        );
+
+        account.pay(2000);
 
         Assertions.assertEquals(0, account.yearChange());
 
