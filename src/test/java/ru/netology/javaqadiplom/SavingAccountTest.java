@@ -4,7 +4,31 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class SavingAccountTest {
-    @Test // Минимальный баланс не может быть больше максимального, метод нужно доработать
+    @Test
+    public void ifMaxBalanceEqualZero() {
+        SavingAccount account = new SavingAccount(
+                0,
+                0,
+                0,
+                5
+        );
+
+        Assertions.assertEquals(0, account.getMaxBalance());
+    }
+
+    @Test
+    public void ifMinBalanceLessThanZero() {
+        SavingAccount account = new SavingAccount(
+                0,
+                -100,
+                5000,
+                5
+        );
+
+        Assertions.assertEquals(0, account.getMinBalance());
+    }
+
+    @Test
     public void shouldThrowExceptionIfMinBalanceMoreMaxBalance() {
 
 
@@ -18,7 +42,7 @@ public class SavingAccountTest {
         });
     }
 
-    @Test // Начальный баланс не может быть меньше минимального, метод нужно доработать
+    @Test
     public void shouldThrowExceptionIfInitialBalanceLessMinBalance() {
 
 
@@ -32,7 +56,7 @@ public class SavingAccountTest {
         });
     }
 
-    @Test // Начальный баланс не может быть больше максимального, метод нужно доработать
+    @Test
     public void shouldThrowExceptionIfInitialBalanceMoreThanMaxBalance() {
 
 
@@ -46,7 +70,7 @@ public class SavingAccountTest {
         });
     }
 
-    @Test // Накопительная ставка всегда положительная
+    @Test
     public void negativeRateTest() {
 
 
@@ -61,7 +85,7 @@ public class SavingAccountTest {
     }
 
 
-    @Test // баланс должен уменьшиться на сумму покупки
+    @Test
     public void shouldPayReduceBalance() {
         SavingAccount account = new SavingAccount(
                 2_000,
@@ -76,7 +100,6 @@ public class SavingAccountTest {
     }
 
     @Test
-    // баланс не может быть меньше минимального после покупки, ошибка в методе pay
     public void shouldNotPayLessThanMinBalance() {
         SavingAccount account = new SavingAccount(
                 2_000,
@@ -85,12 +108,68 @@ public class SavingAccountTest {
                 5
         );
 
-        account.pay(4000);
+        account.pay(1500);
 
         Assertions.assertEquals(2000, account.getBalance());
     }
 
-    @Test // баланс должен увеличиться на сумму пополения, ошибка в методе add
+    @Test
+    public void shouldNotPayWhenAmountMoreThanInitBalance() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                0,
+                10_000,
+                5
+        );
+
+        account.pay(3000);
+
+        Assertions.assertEquals(2000, account.getBalance());
+    }
+
+    @Test
+    public void shouldPayWhenAmountIsZero() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                1_000,
+                10_000,
+                5
+        );
+
+        account.pay(0);
+
+        Assertions.assertEquals(2000, account.getBalance());
+    }
+
+    @Test
+    public void shouldNotPayWhenAmountIsNegative() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                1_000,
+                10_000,
+                5
+        );
+
+        account.pay(-1);
+
+        Assertions.assertEquals(2000, account.getBalance());
+    }
+
+    @Test
+    public void shouldPayWhenAmountEqualsBalance() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                0,
+                10_000,
+                5
+        );
+
+        account.pay(2000);
+
+        Assertions.assertEquals(0, account.getBalance());
+    }
+
+    @Test
     public void shouldAddLessThanMaxBalance() {
         SavingAccount account = new SavingAccount(
                 2_000,
@@ -105,8 +184,21 @@ public class SavingAccountTest {
     }
 
     @Test
-    // после пополнения баланс не может быть больше максимального, операция должна завершиться ничего не поменяв на счете
-    public void shouldAddMoreThanMaxBalance() {
+    public void shouldAddEqualToMaxBalance() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                1_000,
+                10_000,
+                5
+        );
+
+        account.add(8_000);
+
+        Assertions.assertEquals(2_000 + 8_000, account.getBalance());
+    }
+
+    @Test
+    public void shouldNotAddMoreThanMaxBalance() {
         SavingAccount account = new SavingAccount(
                 2_000,
                 1_000,
@@ -119,7 +211,49 @@ public class SavingAccountTest {
         Assertions.assertEquals(2_000, account.getBalance());
     }
 
-    @Test // расчет процентов на остаток счета
+    @Test
+    public void shouldAddWhenAmountIsZero() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                1_000,
+                10_000,
+                5
+        );
+
+        account.add(0);
+
+        Assertions.assertEquals(2_000, account.getBalance());
+    }
+
+    @Test
+    public void shouldNotAddWhenAmountNegative() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                1_000,
+                10_000,
+                5
+        );
+
+        account.add(-1);
+
+        Assertions.assertEquals(2_000, account.getBalance());
+    }
+
+    @Test
+    public void shouldNotAddWhenBalanceLessThanMinBalance() {
+        SavingAccount account = new SavingAccount(
+                2_000,
+                5_000,
+                10_000,
+                5
+        );
+
+        account.add(2_000);
+
+        Assertions.assertEquals(2_000, account.getBalance());
+    }
+
+    @Test
     public void shouldAddYearChangeBalance() {
         SavingAccount account = new SavingAccount(
                 200,
