@@ -4,29 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class SavingAccountTest {
-    @Test
-    public void ifMaxBalanceEqualZero() {
-        SavingAccount account = new SavingAccount(
-                0,
-                0,
-                0,
-                5
-        );
 
-        Assertions.assertEquals(0, account.getMaxBalance());
-    }
-
-    @Test
-    public void ifMinBalanceLessThanZero() {
-        SavingAccount account = new SavingAccount(
-                0,
-                -100,
-                5000,
-                5
-        );
-
-        Assertions.assertEquals(0, account.getMinBalance());
-    }
 
     @Test
     public void shouldThrowExceptionIfMinBalanceMoreMaxBalance() {
@@ -36,6 +14,33 @@ public class SavingAccountTest {
             SavingAccount account = new SavingAccount(
                     2000,
                     20_000,
+                    10_000,
+                    5);
+
+        });
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenMinBalanceEqualsMaxBalance() {
+
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            SavingAccount account = new SavingAccount(
+                    0,
+                    0,
+                    0,
+                    5);
+
+        });
+    }
+    @Test
+    public void shouldThrowExceptionIfMinBalanceLessThanZero() {
+
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            SavingAccount account = new SavingAccount(
+                    0,
+                    -1_000,
                     10_000,
                     5);
 
