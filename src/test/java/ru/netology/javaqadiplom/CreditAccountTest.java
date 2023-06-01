@@ -6,6 +6,37 @@ import org.junit.jupiter.api.Test;
 public class CreditAccountTest {
 
     @Test
+    public void testOnZeroInitialBalance() {
+        CreditAccount account = new CreditAccount(
+                0,
+                5000,
+                15
+        );
+        Assertions.assertEquals(0, account.getBalance());
+    }
+
+    @Test
+    public void testOnZeroCreditLimit() {
+        CreditAccount account = new CreditAccount(
+                1000,
+                0,
+                15
+        );
+        Assertions.assertEquals(0, account.getCreditLimit());
+    }
+
+    @Test
+    public void testOnZeroRate() {
+        CreditAccount account = new CreditAccount(
+                1000,
+                5000,
+                0
+        );
+        Assertions.assertEquals(0, account.getRate());
+    }
+
+
+    @Test
     public void shouldThrowAnExceptionForRate() {
 
 
@@ -78,10 +109,11 @@ public class CreditAccountTest {
 
         account.pay(3000);
 
-        Assertions.assertEquals(-2000, account.getBalance());
+        Assertions.assertEquals(-3000, account.getBalance());
 
 
     }
+
     @Test
     public void shouldReduceBalanceByEqualsPay() {
 
@@ -113,6 +145,7 @@ public class CreditAccountTest {
 
 
     }
+
     @Test
     public void notShouldReduceBalanceByZeroPay() {
 
@@ -144,6 +177,7 @@ public class CreditAccountTest {
 
 
     }
+
     @Test
     public void ShouldReduceBalanceByPayEqualsLimitPlusBalance() {
 
@@ -155,11 +189,10 @@ public class CreditAccountTest {
 
         account.pay(6000);
 
-        Assertions.assertEquals(0, account.getBalance());
+        Assertions.assertEquals(-5000, account.getBalance());
 
 
     }
-
 
 
     @Test
@@ -177,7 +210,7 @@ public class CreditAccountTest {
     }
 
     @Test
-    public void notShouldChangeBalanceOnNegativeAdd() {            //метод на пополнение баланса. баланс не увеличивается на сумму пополнения при отрицательном балансе и при балансе больше 0
+    public void notShouldChangeBalanceOnNegativeAdd() {
         CreditAccount account = new CreditAccount(
                 1000,
                 5_000,
@@ -189,8 +222,9 @@ public class CreditAccountTest {
 
         Assertions.assertEquals(1000, account.getBalance());
     }
+
     @Test
-    public void shouldAddToPositiveBalance() {    //метод на пополнение баланса
+    public void shouldAddToPositiveBalance() {
         CreditAccount account = new CreditAccount(
                 1000,
                 5_000,
@@ -227,7 +261,7 @@ public class CreditAccountTest {
 
         account.pay(2000);
 
-        Assertions.assertEquals(150, account.yearChange());
+        Assertions.assertEquals(-150, account.yearChange());
 
 
     }
@@ -246,6 +280,7 @@ public class CreditAccountTest {
 
 
     }
+
     @Test
     public void notShouldCalculatePercentOnZeroBalance() {
         CreditAccount account = new CreditAccount(
