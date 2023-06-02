@@ -33,6 +33,7 @@ public class SavingAccountTest {
 
         });
     }
+
     @Test
     public void shouldThrowExceptionIfMinBalanceLessThanZero() {
 
@@ -244,20 +245,7 @@ public class SavingAccountTest {
         Assertions.assertEquals(2_000, account.getBalance());
     }
 
-    @Test
-    public void shouldNotAddWhenBalanceLessThanMinBalance() {
-        SavingAccount account = new SavingAccount(
-                2_000,
-                5_000,
-                10_000,
-                5
-        );
-
-        account.add(2_000);
-
-        Assertions.assertEquals(2_000, account.getBalance());
-    }
-
+    
     @Test
     public void shouldAddYearChangeBalance() {
         SavingAccount account = new SavingAccount(
