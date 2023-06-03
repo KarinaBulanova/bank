@@ -245,7 +245,7 @@ public class SavingAccountTest {
         Assertions.assertEquals(2_000, account.getBalance());
     }
 
-    
+
     @Test
     public void shouldAddYearChangeBalance() {
         SavingAccount account = new SavingAccount(
