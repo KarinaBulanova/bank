@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 public class CreditAccountTest {
 
+
     @Test
     public void testOnZeroInitialBalance() {
         CreditAccount account = new CreditAccount(
@@ -295,6 +296,3 @@ public class CreditAccountTest {
 
 
     }
-
-
-}
